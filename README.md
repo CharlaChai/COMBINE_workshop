@@ -13,8 +13,14 @@ We first construct cellular graphs as `networkx.Graph` using raw inputs includin
 
 The function `spacegm.construct_graph_for_region` also generates some visualisations for each region, stored under `graph_img_output` and `voronoi_polygon_img_output`.
 
+The full cellular graph for each region in the dataset can be accessed using the class method `get_full`:
+
+And the n-hop (n=3 in this example) subgraph of region `i` around its center node `j` can be accessed using the class method `get_subgraph`: 
+
 # Step 2: Construct `CellularGraphDataset`
 
 `CellularGraphDataset` will be the major data container used in model training and evaluation. This object also handles all the featurization, subgraph sampling, and other necessary functionalities for SPACE-GM.
 
 We previously saved all regions as networkx graphs, now we initialize the dataset object using these graph files
+
+By default, indexing the dataset object will yield an n-hop subgraph around a randomly picked center node (see class method `pick_center`) in the specified region:
