@@ -18,6 +18,47 @@ from scipy.spatial import Delaunay
 RADIUS_RELAXATION = 0.1
 NEIGHBOR_EDGE_CUTOFF = 55  #55 pixels~20 um
 
+# construct cellular graph and plots
+def construct_cellular_graph(fig_save_root,nx_graph_root,region_ids, voronoi_polygons_all, features_mean_all):
+    for r, region_id in enumerate(region_ids):
+        print("Processing %s" % region_id)
+
+        voronoi_img_output = os.path.join(fig_save_root, "%s_voronoi.png" % region_id)
+        graph_img_output = os.path.join(fig_save_root, "%s_graph.png" % region_id)
+        graph_output = os.path.join(nx_graph_root, 'G_%s.gpkl' % region_id)  ### path for saving cellular graph as gpickle
+        # print('graph_output', graph_output)
+        plot_voronoi_polygon_img=True #voronoi_img_output  ## switch of plot
+        plot_graph_img=True #graph_img_output  ## switch of plot
+                    
+        # Build initial cellular graph
+        G = build_graph_from_voronoi_polygons(voronoi_polygons_all[r])
+        print('markers of features',features_mean_all[r].columns)
+        # Construct matching between voronoi polygons and cells
+        node_to_cell_mapping = build_voronoi_polygon_to_cell_mapping(G, voronoi_polygons_all[r], features_mean_all[r])
+        # Prune graph to contain only voronoi polygons that have corresponding cells
+        G = G.subgraph(node_to_cell_mapping.keys())
+        # Assign attributes to cellular graph
+        G = assign_attributes(G, features_mean_all[r], node_to_cell_mapping)
+        G.region_id = region_id
+        
+        # Visualization of cellular graph
+        figsize=10
+        if plot_voronoi_polygon_img is not None:
+            plt.clf()
+            plt.figure(figsize=(figsize, figsize))
+            plot_voronoi_polygons(G)
+            plt.axis('scaled')
+            plt.savefig(voronoi_img_output, dpi=300, bbox_inches='tight')
+        if plot_graph_img is not None:
+            plt.clf()
+            plt.figure(figsize=(figsize, figsize))
+            plot_graph(G)
+            plt.axis('scaled')
+            plt.savefig(graph_img_output, dpi=300, bbox_inches='tight')
+            
+        # Save graph to file
+        with open(graph_output, 'wb') as f:
+                pickle.dump(G, f)
 
 def plot_voronoi_polygons(voronoi_polygons, voronoi_polygon_colors=None):
     """Plot voronoi polygons for the cellular graph
