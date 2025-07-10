@@ -23,4 +23,8 @@ And the n-hop (n=3 in this example) subgraph of region `i` around its center nod
 
 We previously saved all regions as networkx graphs, now we initialize the dataset object using these graph files
 
-By default, indexing the dataset object will yield an n-hop subgraph around a randomly picked center node (see class method `pick_center`) in the specified region:
+# Step 3: Initialise a Graph Neural Network (GNN)
+
+# Step 4: Train the GNN
+
+# Step 5: Evaluate the GNN
