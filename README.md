@@ -21,8 +21,6 @@ And the n-hop (n=3 in this example) subgraph of region `i` around its center nod
 
 `CellularGraphDataset` will be the major data container used in model training and evaluation. This object also handles all the featurization, subgraph sampling, and other necessary functionalities for SPACE-GM.
 
-We previously saved all regions as networkx graphs, now we initialize the dataset object using these graph files
-
 # Step 3: Initialise a Graph Neural Network (GNN)
 
 # Step 4: Train the GNN
